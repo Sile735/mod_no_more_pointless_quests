@@ -1,25 +1,18 @@
-local gt = this.getroottable();
+// Removes low-value contracts from the pool that settlements can offer:
+//  - northern settlements: item delivery and discover location
+//  - southern city states: item delivery
+// ::Const.FactionTrait.Actions[trait] lists the contract actions a faction with that trait can offer.
 
-function removeByValue(arr, val) {
-    local idx = arr.find(val);
-    if ( idx != null ) {  // found
-        arr.remove(idx);
-    }
-    else{
-    	::logInfo("item not found " + val)
-    }
+local function removeAction( _trait, _script )
+{
+	local actions = ::Const.FactionTrait.Actions[_trait];
+	local idx = actions.find(_script);
+	if (idx != null)
+		actions.remove(idx);
+	else
+		::logWarning(format("%s: contract action %s not found for faction trait %i", ::mod_nmpq.Name, _script, _trait));
 }
 
-function logArray(arr){
-	foreach (item in arr)
-	{
-		::logInfo(item);
-	}
-}
-
-::logInfo("No More pointless quests removing")
-removeByValue(gt.Const.FactionTrait.Actions[10], "scripts/factions/contracts/item_delivery_action");
-removeByValue(gt.Const.FactionTrait.Actions[10], "scripts/factions/contracts/discover_location_action");
-removeByValue(gt.Const.FactionTrait.Actions[18], "scripts/factions/contracts/item_delivery_action");
-::logInfo("removed the pointless quests");
-
+removeAction(::Const.FactionTrait.Settlement, "scripts/factions/contracts/item_delivery_action");
+removeAction(::Const.FactionTrait.Settlement, "scripts/factions/contracts/discover_location_action");
+removeAction(::Const.FactionTrait.OrientalCityState, "scripts/factions/contracts/item_delivery_action");
